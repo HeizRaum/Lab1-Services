@@ -3,6 +3,8 @@ Laboratory #1: Middleware and services
 
 # Basic structure of the project
 
+![structureDiagram](https://user-images.githubusercontent.com/46252493/100298079-2fc80100-2f5e-11eb-8331-0027a950b13c.png)
+
 ## Project setup
 ```
 npm install
