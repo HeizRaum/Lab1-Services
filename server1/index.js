@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var app = express_1.default();
 app.get('/', function (request, response) {
-    response.send('Henlo');
+    response.send({
+        message: "Server 1 correctly running at: " + Date.now,
+        code: 200
+    });
 });
 app.listen(3000);

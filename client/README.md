@@ -1,9 +1,4 @@
-Laboratory #1: Middleware and services 🖥️
-=========================================
-
-# Basic structure of the project
-
-![structureDiagram1](https://user-images.githubusercontent.com/46252493/100399694-bc87c300-3021-11eb-94e7-4d839afa768d.png)
+# middleware
 
 ## Project setup
 ```
