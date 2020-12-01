@@ -4,7 +4,7 @@ const app = Express();
 
 app.get('/', (request, response) => {
   response.send({
-    message: `Server 1 correctly running at: ${Date.now}`,
+    message: `Server 1 correctly running at: ${Date.now().toString()}`,
     code: 200,
   });
 });
