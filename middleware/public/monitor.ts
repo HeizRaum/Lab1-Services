@@ -1,5 +1,6 @@
 import Database from './database';
 import Http from 'http';
+import connectionCodes from './connectionCodes';
 
 interface ServerInfo {
   name: string,
@@ -31,18 +32,19 @@ export default class Monitor {
     }, (response) => {
       response.on('data', () => {
         console.log(`Server response: ${response.statusCode}`);
-        this.writeToDatabase(server.name);
+        this.writeToDatabase(server.name, connectionCodes.OK);
       });
       response.on('end', () => {
         setTimeout(() => this.requestFromServer(server), Monitor.TIMEOUT_TIME);
       });
     }).addListener('error', () => {
       console.log('Error: Server did not send a response!');
+      this.writeToDatabase(server.name, connectionCodes.SERVICE_UNAVAILABLE)
       setTimeout(() => this.requestFromServer(server), Monitor.TIMEOUT_TIME);
     }).end();
   }
 
-  private writeToDatabase(serverName: String) {
-    Database.instance.writeLog(Date.now(), serverName);
+  private writeToDatabase(serverName: String, code: Number) {
+    Database.instance.writeLog(Date.now(), serverName, code);
   }
 }

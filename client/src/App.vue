@@ -1,28 +1,19 @@
 <template>
 <div>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
   <router-view/>
 </div>
 </template>
 
 <script lang="ts">
-const API_URL = 'http://localhost:8002/server-status';
 export default {
-  setup() {
-    const messages = [];
-  },
-  mounted() {
-    fetch(API_URL)
-      .then((response) => response.text())
-      .then((data) => console.log(data));
-  },
 };
 </script>
 
 <style lang="scss">
+body {
+  background: #B3B3B3;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

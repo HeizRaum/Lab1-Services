@@ -67,7 +67,10 @@ var Database = /** @class */ (function () {
                             }
                             tables.forEach(function (value) {
                                 database.get("SELECT * FROM " + value.name + " ORDER BY rowid DESC LIMIT 1", function (error, row) {
-                                    serverLogs.push(new Date(row.date));
+                                    serverLogs.push({
+                                        dateChecked: new Date(row.date),
+                                        code: row.code
+                                    });
                                 });
                             });
                             database.close(function () {
@@ -79,12 +82,12 @@ var Database = /** @class */ (function () {
             });
         });
     };
-    Database.prototype.writeLog = function (date, serverName) {
+    Database.prototype.writeLog = function (date, serverName, code) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 this.checkTableInDatabase(serverName, function () {
-                    _this.addLogToDatabase(date, serverName);
+                    _this.addLogToDatabase(date, serverName, code);
                 });
                 return [2 /*return*/];
             });
@@ -112,7 +115,7 @@ var Database = /** @class */ (function () {
                                 throw error;
                             }
                             if (table.length == 0) {
-                                database.run("CREATE TABLE " + serverName + " (date INTEGER)");
+                                database.run("CREATE TABLE " + serverName + " (date INTEGER, code INTEGER)");
                             }
                             database.close(function () {
                                 callback();
@@ -123,7 +126,7 @@ var Database = /** @class */ (function () {
             });
         });
     };
-    Database.prototype.addLogToDatabase = function (date, serverName) {
+    Database.prototype.addLogToDatabase = function (date, serverName, code) {
         return __awaiter(this, void 0, void 0, function () {
             var database;
             return __generator(this, function (_a) {
@@ -131,7 +134,7 @@ var Database = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.connectToDatabase()];
                     case 1:
                         database = _a.sent();
-                        database.run("INSERT INTO " + serverName + " (date) VALUES (?)", [date], function (error) {
+                        database.run("INSERT INTO " + serverName + " (date, code) VALUES (?, ?)", [date, code], function (error) {
                             if (error) {
                                 console.log(error);
                             }

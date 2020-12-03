@@ -11,11 +11,8 @@ var Server = /** @class */ (function () {
         this.app = express_1.default();
         this.app.get('/server-status', cors_1.default(), function (request, response) {
             database_1.default.instance.getLastServersLog(function (serverLogs) {
-                serverLogs.forEach(function (date) {
-                    console.log(date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
-                });
+                response.send(serverLogs);
             });
-            response.json({});
         });
         this.app.listen(8002);
     }

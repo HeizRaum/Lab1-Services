@@ -1,5 +1,10 @@
 import Sqlite3 from 'sqlite3';
 
+export interface ServerLog {
+  dateChecked: Date;
+  code: Number;
+}
+
 export default class Database {
   private static _instance: Database;
 
@@ -14,7 +19,7 @@ export default class Database {
   public async getLastServersLog(callback: Function) {
     const database = await this.connectToDatabase();
 
-    let serverLogs: Date[] = [];
+    let serverLogs: ServerLog[] = [];
 
     database.all(`SELECT name FROM sqlite_master WHERE type="table"`, (error, tables) => {
       if (error) {
@@ -23,7 +28,10 @@ export default class Database {
       }
       tables.forEach((value) => {
         database.get(`SELECT * FROM ${value.name} ORDER BY rowid DESC LIMIT 1`, (error, row) => {
-          serverLogs.push(new Date(row.date));
+          serverLogs.push({
+            dateChecked: new Date(row.date),
+            code: row.code
+          });
         });
       });
       database.close(() => {
@@ -32,9 +40,9 @@ export default class Database {
     });
   }
 
-  public async writeLog(date: Number, serverName: String) {
+  public async writeLog(date: Number, serverName: String, code: Number) {
     this.checkTableInDatabase(serverName, () => {
-      this.addLogToDatabase(date, serverName);
+      this.addLogToDatabase(date, serverName, code);
     });
   }
 
@@ -53,7 +61,7 @@ export default class Database {
         throw error;
       }
       if (table.length == 0) {
-        database.run(`CREATE TABLE ${serverName} (date INTEGER)`);
+        database.run(`CREATE TABLE ${serverName} (date INTEGER, code INTEGER)`);
       }
       database.close(() => {
         callback();
@@ -61,10 +69,10 @@ export default class Database {
     });
   }
 
-  private async addLogToDatabase(date: Number, serverName: String) {
+  private async addLogToDatabase(date: Number, serverName: String, code: Number) {
     const database = await this.connectToDatabase();
 
-    database.run(`INSERT INTO ${serverName} (date) VALUES (?)`, [date], (error) => {
+    database.run(`INSERT INTO ${serverName} (date, code) VALUES (?, ?)`, [date, code], (error) => {
       if (error) {
         console.log(error);
       }
