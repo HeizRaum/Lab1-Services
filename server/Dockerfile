@@ -1,6 +1,6 @@
 FROM node:15.3.0-alpine3.10
 
-WORKDIR /server2
+WORKDIR /server1
 
 COPY package*.json ./
 
@@ -10,8 +10,8 @@ COPY . ./
 
 RUN npm run tsc
 
-ENV port=4000
+ENV port=3000
 
-EXPOSE 4000
+EXPOSE 3000
 
-CMD ["node", "index.js"]
+CMD ["node", "out/index.js"]

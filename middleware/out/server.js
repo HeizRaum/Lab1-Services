@@ -4,23 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var database_1 = __importDefault(require("./database"));
 var cors_1 = __importDefault(require("cors"));
-//
-//
-//app.get('/serverStatus', Cors(), function(request, response) {
-//  response.json({
-//
-//  });
-//});
-//
-//app.listen(8000);
 var Server = /** @class */ (function () {
     function Server() {
         this.app = express_1.default();
-        this.app.get('/serverStatus', cors_1.default(), function (request, response) {
-            console.log(request);
+        this.app.get('/server-status', cors_1.default(), function (request, response) {
+            database_1.default.instance.getLastServersLog(function (serverLogs) {
+                serverLogs.forEach(function (date) {
+                    console.log(date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+                });
+            });
+            response.json({});
         });
-        this.app.listen(8000);
+        this.app.listen(8002);
     }
     return Server;
 }());

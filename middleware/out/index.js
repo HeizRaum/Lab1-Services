@@ -49,7 +49,7 @@ var monitor_1 = __importDefault(require("./monitor"));
 }); })();
 (function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        new monitor_1.default('localhost:3000', 'localhost:4000');
+        new monitor_1.default({ name: 'server1', host: 'localhost', port: '8000', path: '/' }, { name: 'server2', host: 'localhost', port: '8001', path: '/' });
         return [2 /*return*/];
     });
 }); })();

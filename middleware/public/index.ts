@@ -7,7 +7,7 @@ import Monitor from './monitor';
 
 (async () => {
   new Monitor(
-    'localhost:3000',
-    'localhost:4000'
+    { name: 'server1', host: 'localhost', port: '8000', path: '/' },
+    { name: 'server2', host: 'localhost', port: '8001', path: '/' },
   );
 })();

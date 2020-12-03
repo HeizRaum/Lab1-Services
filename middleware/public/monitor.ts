@@ -1,34 +1,48 @@
-import Sqlite3 from 'sqlite3';
+import Database from './database';
 import Http from 'http';
 
+interface ServerInfo {
+  name: string,
+  host: string,
+  port: string,
+  path: string
+}
+
 export default class Monitor {
-  constructor(server1Url: string, server2Url: string) {
+  static TIMEOUT_TIME = 3000;
+
+  constructor(server1: ServerInfo, server2: ServerInfo) {
     console.log('Monitor started');
 
-    this.monitorServer(server1Url);
-    this.monitorServer(server2Url);
+    this.startMonitoringServer(server1);
+    this.startMonitoringServer(server2);
   }
 
-  private monitorServer(serverUrl: string) {
+  private startMonitoringServer(server: ServerInfo) {
+    this.requestFromServer(server);
+  }
+
+  private requestFromServer(server: ServerInfo) {
     Http.request({
-      host: 'localhost',
-      port: '3000',
-      path: '/',
+      host: server.host,
+      port: server.port,
+      path: server.path,
       method: 'GET'
     }, (response) => {
-      let body = '';
-
-      response.on('data', (chunk) => {
-        body += chunk;
+      response.on('data', () => {
+        console.log(`Server response: ${response.statusCode}`);
+        this.writeToDatabase(server.name);
       });
-
-      response.on('close', () => {
-        try {
-          console.log(JSON.parse(body));
-        } catch(error) {
-          console.log('Error parsing the JSON, from server!');
-        }
-      })
+      response.on('end', () => {
+        setTimeout(() => this.requestFromServer(server), Monitor.TIMEOUT_TIME);
+      });
+    }).addListener('error', () => {
+      console.log('Error: Server did not send a response!');
+      setTimeout(() => this.requestFromServer(server), Monitor.TIMEOUT_TIME);
     }).end();
+  }
+
+  private writeToDatabase(serverName: String) {
+    Database.instance.writeLog(Date.now(), serverName);
   }
 }

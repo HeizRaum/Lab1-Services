@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-const API_URL = 'http://localhost:8000/';
+const API_URL = 'http://localhost:8002/server-status';
 export default {
   setup() {
     const messages = [];
